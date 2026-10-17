@@ -153,7 +153,13 @@
     }
 
     .nav-btn.active-tab {
-      background: rgba(255,255,255,0.45) !important;
+      background: #ffffff !important;
+      color: #0d9488 !important;
+      font-weight: 700 !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .nav-btn.active-tab i {
+      color: #0d9488 !important;
     }
 
     .vitamin-badge {
@@ -212,6 +218,9 @@
         </button>
         <button onclick="showPage('diseaseList')" id="nav-diseaseList" class="nav-btn bg-white/20 hover:bg-white/30 px-3 py-2 rounded-lg text-sm font-medium">
           <i class="fas fa-notes-medical mr-1"></i> Diseases
+        </button>
+        <button id="langToggle" onclick="toggleLanguage()" class="nav-btn bg-amber-500 hover:bg-amber-600 text-white px-3 py-2 rounded-lg text-sm font-bold shadow" title="Switch language">
+          हिंदी
         </button>
         <button onclick="showThankYou()" class="nav-btn bg-white/20 hover:bg-white/30 px-3 py-2 rounded-lg text-sm font-medium" title="Close">
           <i class="fas fa-times"></i>
@@ -353,31 +362,6 @@
         </div>
       </div>
 
-      <!-- How to use -->
-      <div class="bg-white/80 backdrop-blur rounded-2xl shadow-xl p-6 max-w-lg mx-auto mt-10">
-        <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
-          <i class="fas fa-info-circle text-teal-600"></i> How to use
-        </h3>
-        <ul class="space-y-3 text-sm text-gray-700">
-          <li class="flex items-start gap-2">
-            <span class="bg-teal-100 text-teal-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shrink-0">1</span>
-            <span>Tap any colored hotspot near the body</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="bg-teal-100 text-teal-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shrink-0">2</span>
-            <span>Discover key vitamins & minerals for that area</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="bg-teal-100 text-teal-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shrink-0">3</span>
-            <span>See the best whole foods that supply them</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <span class="bg-teal-100 text-teal-700 rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shrink-0">4</span>
-            <span>Or use the Vitamins, Minerals, Body Parts & Diseases tabs above to browse directly</span>
-          </li>
-        </ul>
-      </div>
-
       <!-- Disease CTA -->
       <div class="mt-6 bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
         <div class="flex flex-col md:flex-row items-center gap-4 justify-between">
@@ -489,7 +473,186 @@
   </footer>
 
   <script>
-    const bodyParts = {
+
+    // ========== LANGUAGE SYSTEM ==========
+    let currentLang = 'en';  // 'en' or 'hi'
+
+    const ui = {
+      en: {
+        home: 'Home',
+        bodyParts: 'Body Parts',
+        vitamins: 'Vitamins',
+        minerals: 'Minerals',
+        diseases: 'Diseases',
+        exploreTitle: 'Explore Your Body',
+        exploreDesc: 'Tap any hotspot near the body to discover the vitamins, minerals, and foods that keep it healthy — from hair and skin to your heart, liver, kidneys, nerves and more.',
+        managingTitle: 'Managing a health condition?',
+        managingDesc: 'Browse condition-specific guides for foods that help — and foods to go easy on.',
+        browseConditions: 'Browse Conditions',
+        eatRainbow: 'Eat the rainbow!',
+        eatRainbowDesc: "It's best to get nutrients from a variety of whole foods rather than relying only on supplements. Always consult your doctor before starting any supplement regimen or making dietary changes for a medical condition.",
+        backToBody: 'Back to Body Map',
+        browseBody: 'Browse by Body Part',
+        browseBodyDesc: 'Tap any body part to see its key vitamins, minerals and best food sources.',
+        browseVit: 'Browse by Vitamin',
+        browseMin: 'Browse by Mineral',
+        browseDis: 'Browse by Condition',
+        recommended: 'Recommended Nutrients',
+        coreBenefits: 'Core Health Benefits',
+        topFoods: 'Top Food Sources',
+        tip: 'Tip:',
+        moreOptions: 'More options available in a balanced, varied diet.',
+        foodsThatHelp: 'Foods That May Help',
+        foodsToLimit: 'Foods to Limit',
+        aboutCondition: 'About this condition',
+        educational: 'Educational information only — not medical advice. Always consult a doctor or dietitian for diagnosis and personalized treatment.',
+        thankTitle: 'Take Care & Stay Fit',
+        thankSub: 'Thank You for using this app',
+        close: 'Close',
+        langBtn: 'हिंदी',
+        keyNutrients: 'Key nutrients & food sources',
+        relatedSystem: 'Related system:',
+        targets: 'Targets:'
+      },
+      hi: {
+        home: 'होम',
+        bodyParts: 'शरीर के अंग',
+        vitamins: 'विटामिन',
+        minerals: 'खनिज',
+        diseases: 'रोग',
+        exploreTitle: 'अपने शरीर को जानें',
+        exploreDesc: 'शरीर के पास किसी भी हॉटस्पॉट पर टैप करें और जानें कि कौन से विटामिन, खनिज और खाद्य पदार्थ उसे स्वस्थ रखते हैं — बाल और त्वचा से लेकर हृदय, लीवर, किडनी, नसों तक।',
+        managingTitle: 'किसी स्वास्थ्य स्थिति का प्रबंधन?',
+        managingDesc: 'सहायक खाद्य पदार्थों और सावधानी बरतने वाले खाद्य पदार्थों के लिए स्थिति-विशिष्ट गाइड देखें।',
+        browseConditions: 'स्थितियाँ देखें',
+        eatRainbow: 'इंद्रधनुष खाएँ!',
+        eatRainbowDesc: 'पूरक आहार पर निर्भर रहने के बजाय विविध प्रकार के संपूर्ण खाद्य पदार्थों से पोषक तत्व लेना सबसे अच्छा है। किसी भी पूरक आहार या आहार परिवर्तन से पहले डॉक्टर से सलाह लें।',
+        backToBody: 'बॉडी मैप पर वापस',
+        browseBody: 'शरीर के अंग के अनुसार',
+        browseBodyDesc: 'किसी भी अंग पर टैप करें और उसके मुख्य विटामिन, खनिज और सर्वोत्तम खाद्य स्रोत देखें।',
+        browseVit: 'विटामिन के अनुसार',
+        browseMin: 'खनिज के अनुसार',
+        browseDis: 'स्थिति के अनुसार',
+        recommended: 'अनुशंसित पोषक तत्व',
+        coreBenefits: 'मुख्य स्वास्थ्य लाभ',
+        topFoods: 'शीर्ष खाद्य स्रोत',
+        tip: 'सुझाव:',
+        moreOptions: 'संतुलित और विविध आहार में और भी विकल्प उपलब्ध हैं।',
+        foodsThatHelp: 'सहायक खाद्य पदार्थ',
+        foodsToLimit: 'सीमित रखने वाले खाद्य पदार्थ',
+        aboutCondition: 'इस स्थिति के बारे में',
+        educational: 'केवल शैक्षिक जानकारी — चिकित्सकीय सलाह नहीं। निदान और व्यक्तिगत उपचार के लिए हमेशा डॉक्टर या आहार विशेषज्ञ से सलाह लें।',
+        thankTitle: 'ध्यान रखें और फिट रहें',
+        thankSub: 'इस ऐप का उपयोग करने के लिए धन्यवाद',
+        close: 'बंद करें',
+        langBtn: 'English',
+        keyNutrients: 'मुख्य पोषक तत्व और खाद्य स्रोत',
+        relatedSystem: 'संबंधित प्रणाली:',
+        targets: 'लक्ष्य:'
+      }
+    };
+
+    function t(key) {
+      return (ui[currentLang] && ui[currentLang][key]) || ui.en[key] || key;
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'hi' : 'en';
+      applyLanguage();
+    }
+
+    function applyLanguage() {
+      // Update nav buttons
+      const navHome = document.getElementById('nav-home');
+      const navBody = document.getElementById('nav-bodyPartList');
+      const navVit = document.getElementById('nav-vitaminList');
+      const navMin = document.getElementById('nav-mineralList');
+      const navDis = document.getElementById('nav-diseaseList');
+      if (navHome) navHome.innerHTML = '<i class="fas fa-home mr-1"></i> ' + t('home');
+      if (navBody) navBody.innerHTML = '<i class="fas fa-person mr-1"></i> ' + t('bodyParts');
+      if (navVit) navVit.innerHTML = '<i class="fas fa-capsules mr-1"></i> ' + t('vitamins');
+      if (navMin) navMin.innerHTML = '<i class="fas fa-gem mr-1"></i> ' + t('minerals');
+      if (navDis) navDis.innerHTML = '<i class="fas fa-notes-medical mr-1"></i> ' + t('diseases');
+
+      // Language button itself
+      const langBtn = document.getElementById('langToggle');
+      if (langBtn) langBtn.textContent = t('langBtn');
+
+      // Home page - ONLY the explore title/desc (never touch the [BENEFIT=...] line or header branding)
+      const exploreH2 = document.querySelector('#page-home h2.text-3xl');
+      if (exploreH2) exploreH2.textContent = t('exploreTitle');
+      // The explore description is the p right after the h2 inside the text-center mb-8 div
+      const homeCenter = document.querySelector('#page-home .text-center.mb-8');
+      if (homeCenter) {
+        const exploreP = homeCenter.querySelector('p.text-gray-600');
+        if (exploreP) exploreP.textContent = t('exploreDesc');
+      }
+
+      // Disease CTA card
+      const ctaCard = document.querySelector('#page-home .bg-white.rounded-2xl.shadow-lg');
+      if (ctaCard) {
+        const manageH4 = ctaCard.querySelector('h4.font-semibold.text-gray-800');
+        if (manageH4) manageH4.textContent = t('managingTitle');
+        const manageP = ctaCard.querySelector('p.text-sm.text-gray-600');
+        if (manageP) manageP.textContent = t('managingDesc');
+        const browseBtn = ctaCard.querySelector('button[onclick*="diseaseList"]');
+        if (browseBtn) browseBtn.innerHTML = t('browseConditions') + ' <i class="fas fa-arrow-right ml-1"></i>';
+      }
+
+      // Eat the rainbow card
+      const rainbowCard = document.querySelector('#page-home .bg-gradient-to-r.from-teal-50');
+      if (rainbowCard) {
+        const rainbowH4 = rainbowCard.querySelector('h4.font-semibold.text-teal-800');
+        if (rainbowH4) rainbowH4.textContent = t('eatRainbow');
+        const rainbowP = rainbowCard.querySelector('p.text-sm.text-teal-700');
+        if (rainbowP) rainbowP.textContent = t('eatRainbowDesc');
+      }
+
+      // List page headings
+      const setListHead = (pageId, titleKey, descKey) => {
+        const page = document.getElementById('page-' + pageId);
+        if (!page) return;
+        const h2 = page.querySelector('h2');
+        const p = page.querySelector('p.text-gray-600');
+        if (h2) h2.textContent = t(titleKey);
+        if (p) p.textContent = t(descKey);
+      };
+      setListHead('bodyPartList', 'browseBody', 'browseBodyDesc');
+      setListHead('vitaminList', 'browseVit', 'browseBodyDesc');
+      setListHead('mineralList', 'browseMin', 'browseBodyDesc');
+      setListHead('diseaseList', 'browseDis', 'browseBodyDesc');
+
+      // Thank you modal
+      const thankH2 = document.querySelector('#thankYouModal h2');
+      const thankP = document.querySelector('#thankYouModal p');
+      const thankClose = document.querySelector('#thankYouModal button');
+      if (thankH2) thankH2.textContent = t('thankTitle');
+      if (thankP) thankP.textContent = t('thankSub');
+      if (thankClose) thankClose.textContent = t('close');
+
+      // Re-render current list pages and restore active tab highlight
+      const active = document.querySelector('.page.active');
+      if (active) {
+        const id = active.id.replace('page-', '');
+        // Map detail pages back to their parent list for tab highlight
+        let tabId = id;
+        if (id === 'detail') tabId = 'bodyPartList';
+        if (id === 'nutrient') tabId = 'vitaminList';
+        if (id === 'mineralDetail') tabId = 'mineralList';
+        if (id === 'diseaseDetail') tabId = 'diseaseList';
+        const navPages = ['home', 'bodyPartList', 'vitaminList', 'mineralList', 'diseaseList'];
+        navPages.forEach(nid => {
+          const btn = document.getElementById('nav-' + nid);
+          if (btn) btn.classList.toggle('active-tab', nid === tabId);
+        });
+        if (id === 'bodyPartList') renderBodyPartList();
+        if (id === 'vitaminList') renderVitaminList();
+        if (id === 'mineralList') renderMineralList();
+        if (id === 'diseaseList') renderDiseaseList();
+      }
+    }
+
+        const bodyParts = {
       brain: {
         title: "Brain & Memory",
         icon: "fa-brain",
@@ -1145,14 +1308,515 @@
 
     const navPages = ['home', 'bodyPartList', 'vitaminList', 'mineralList', 'diseaseList'];
 
+
+    // Hindi titles for body parts, nutrients, minerals, diseases
+    const hiTitles = {
+      // body parts
+      brain: "मस्तिष्क और स्मृति",
+      eyes: "आँखें और दृष्टि",
+      heart: "हृदय और रक्त",
+      digestion: "पाचन और डिटॉक्स",
+      reproductive: "प्रजनन स्वास्थ्य",
+      muscles: "मांसपेशियाँ",
+      bones: "हड्डियों की मजबूती",
+      energy: "ऊर्जा और चयापचय",
+      hair: "बाल और स्कैल्प",
+      teeth: "दाँत और मसूड़े",
+      skin: "त्वचा स्वास्थ्य",
+      kidneys: "किडनी कार्य",
+      liver: "लीवर स्वास्थ्य",
+      nerves: "तंत्रिका तंत्र",
+      // vitamins
+      A: "विटामिन ए",
+      B: "विटामिन बी कॉम्प्लेक्स (बी6, बी12, फोलेट)",
+      C: "विटामिन सी",
+      D: "विटामिन डी",
+      E: "विटामिन ई",
+      // minerals
+      Calcium: "कैल्शियम",
+      Magnesium: "मैग्नीशियम",
+      Zinc: "जिंक",
+      Iron: "आयरन",
+      Potassium: "पोटैशियम",
+      Sodium: "सोडियम",
+      Iodine: "आयोडीन",
+      // diseases
+      diabetes: "टाइप 2 मधुमेह",
+      hypertension: "उच्च रक्तचाप",
+      anemia: "आयरन की कमी से एनीमिया",
+      osteoporosis: "ऑस्टियोपोरोसिस / कमजोर हड्डियाँ",
+      acidity: "एसिडिटी और GERD",
+      arthritis: "गठिया और जोड़ों का दर्द",
+      fattyLiver: "फैटी लीवर रोग",
+      kidneyStones: "किडनी स्टोन",
+      hairLoss: "बाल झड़ना और पतले होना",
+      skinIssues: "मुँहासे और त्वचा समस्याएँ",
+      dentalCavities: "दाँतों में सड़न और मसूड़ों की बीमारी",
+      anxietyInsomnia: "तनाव, चिंता और नींद की कमी",
+      thyroid: "थायरॉइड असंतुलन",
+      immunity: "बार-बार सर्दी / कम प्रतिरोधक क्षमता"
+    };
+
+
+    // Hindi benefits & tips (used when language is Hindi)
+    const hiContent = {
+      brain: {
+        benefits: "स्मृति बढ़ाता है, संज्ञानात्मक स्वास्थ्य का समर्थन करता है, मस्तिष्क कोशिकाओं में ऊर्जा उत्पादन में मदद करता है और तंत्रिका संकेतों के सही संचरण को सुनिश्चित करता है। एकाग्रता और मनोदशा नियमन के लिए महत्वपूर्ण।",
+        tip: "बी विटामिन मिलकर काम करते हैं — पौधे और पशु स्रोतों से भरपूर विविध आहार मस्तिष्क को तेज रखता है।"
+      },
+      eyes: {
+        benefits: "मैक्यूलर डिजनरेशन और रात्रि अंधता से बचाता है। एंटीऑक्सीडेंट रेटिना में ऑक्सीडेटिव तनाव से लड़ते हैं। आँखों की स्वस्थ कोशिका परत और स्पष्ट दृष्टि का समर्थन करते हैं।",
+        tip: "गहरे हरे पत्तेदार सब्जियों से ल्यूटिन और ज़ेक्सैंथिन मैकुला के लिए विशेष रूप से सुरक्षात्मक हैं।"
+      },
+      heart: {
+        benefits: "हृदय स्वास्थ्य का समर्थन करता है, रक्तचाप नियंत्रित करने में मदद करता है, रक्त वाहिकाओं की रक्षा करता है, लाल रक्त कोशिकाओं के निर्माण में सहायता करता है और सूजन कम करता है। स्वस्थ परिसंचरण के लिए आवश्यक।",
+        tip: "ओमेगा-3 फैटी एसिड और बी विटामिन मिलकर हृदय की लय और स्वस्थ कोलेस्ट्रॉल स्तर का समर्थन करते हैं।"
+      },
+      digestion: {
+        benefits: "आंत की म्यूकोसल परत का समर्थन करता है, पोषक तत्वों के अवशोषण में मदद करता है, स्वस्थ आंत बैक्टीरिया को बढ़ावा देता है, लीवर डिटॉक्स पथ में सहायता करता है और नियमित मल त्याग बनाए रखता है।",
+        tip: "फाइबर युक्त खाद्य पदार्थ, बी विटामिन और विटामिन ए पाचन तंत्र की परत को मजबूत रखते हैं।"
+      },
+      reproductive: {
+        benefits: "हार्मोन संतुलन, स्वस्थ शुक्राणु और अंडाणु विकास का समर्थन करता है, न्यूरल ट्यूब दोष का जोखिम कम करता है (फोलेट), प्रजनन प्रक्रियाओं के लिए ऊर्जा उत्पादन में मदद करता है और मासिक धर्म चक्र नियंत्रित करने में सहायता करता है।",
+        tip: "गर्भावस्था से पहले और प्रारंभिक गर्भावस्था में फोलिक एसिड विशेष रूप से महत्वपूर्ण है। जिंक भी प्रजनन स्वास्थ्य में महत्वपूर्ण भूमिका निभाता है।"
+      },
+      muscles: {
+        benefits: "मांसपेशी संकुचन और विश्राम का समर्थन करता है, मांसपेशी ऊतक में ऑक्सीडेटिव तनाव कम करता है, व्यायाम के बाद रिकवरी में मदद करता है, मांसपेशी शक्ति और द्रव्यमान बनाए रखने में सहायता करता है।",
+        tip: "विटामिन डी और मैग्नीशियम सही मांसपेशी कार्य और ऐंठन कम करने के लिए महत्वपूर्ण साथी हैं।"
+      },
+      bones: {
+        benefits: "कैल्शियम अवशोषण बढ़ाता है, हड्डी घनत्व बनाता और बनाए रखता है, हड्डी क्षय (ऑस्टियोपोरोसिस) रोकता है, कंकाल की संरचनात्मक अखंडता का समर्थन करता है।",
+        tip: "कैल्शियम अवशोषण के लिए विटामिन डी आवश्यक है। सुरक्षित धूप और डी युक्त खाद्य पदार्थ शामिल करें।"
+      },
+      energy: {
+        benefits: "भोजन को उपयोगी कोशिकीय ऊर्जा (ATP) में बदलता है, माइटोकॉन्ड्रियल कार्य का समर्थन करता है, थकान कम करता है, दिन भर स्थिर ऊर्जा स्तर बनाए रखने में मदद करता है।",
+        tip: "बी12 और मैग्नीशियम ऊर्जा चयापचय में मुख्य भूमिका निभाते हैं। थकान कभी-कभी इनकी कमी का संकेत हो सकती है।"
+      },
+      hair: {
+        benefits: "स्वस्थ बाल विकास, स्कैल्प स्वास्थ्य और बालों की मजबूती का समर्थन करता है। पोषक तत्वों की कमी से होने वाले बाल झड़ने को कम करने में मदद करता है।",
+        tip: "बायोटिन, जिंक, आयरन और प्रोटीन बाल स्वास्थ्य के लिए महत्वपूर्ण हैं।"
+      },
+      teeth: {
+        benefits: "दाँतों और मसूड़ों को मजबूत बनाता है, कैविटी से बचाता है और मौखिक स्वास्थ्य बनाए रखता है।",
+        tip: "कैल्शियम, विटामिन डी और विटामिन सी दाँत और मसूड़ों के स्वास्थ्य के लिए आवश्यक हैं।"
+      },
+      skin: {
+        benefits: "त्वचा की लोच, चमक और मरम्मत का समर्थन करता है। ऑक्सीडेटिव क्षति से बचाता है और स्वस्थ त्वचा अवरोध बनाए रखता है।",
+        tip: "विटामिन ए, सी, ई और जिंक त्वचा स्वास्थ्य के लिए विशेष रूप से लाभकारी हैं।"
+      },
+      kidneys: {
+        benefits: "किडनी कार्य का समर्थन करता है, अपशिष्ट निस्पंदन में मदद करता है और द्रव संतुलन बनाए रखता है।",
+        tip: "पर्याप्त जल सेवन और नियंत्रित नमक किडनी स्वास्थ्य के लिए महत्वपूर्ण हैं।"
+      },
+      liver: {
+        benefits: "लीवर डिटॉक्सिफिकेशन का समर्थन करता है, वसा चयापचय में मदद करता है और लीवर कोशिकाओं की रक्षा करता है।",
+        tip: "हरी पत्तेदार सब्जियाँ, चुकंदर और सीमित शराब/प्रसंस्कृत भोजन लीवर के लिए सहायक हैं।"
+      },
+      nerves: {
+        benefits: "तंत्रिका संकेत संचरण, माइलिन आवरण स्वास्थ्य और तंत्रिका सुरक्षा का समर्थन करता है।",
+        tip: "बी12, बी6 और ओमेगा-3 तंत्रिका स्वास्थ्य के लिए महत्वपूर्ण हैं।"
+      },
+      A: {
+        benefits: "दृष्टि सुरक्षा (विशेषकर रात्रि दृष्टि), अंगों की स्वस्थ कोशिका परत, प्रतिरक्षा रक्षा और त्वचा स्वास्थ्य। उपकला ऊतक रखरखाव के लिए महत्वपूर्ण।",
+        tip: "नारंगी और गहरे हरे रंग की सब्जियाँ बीटा-कैरोटीन के उत्कृष्ट स्रोत हैं।"
+      },
+      B: {
+        benefits: "स्मृति और संज्ञानात्मक स्वास्थ्य बढ़ाता है, भोजन से ऊर्जा उत्पादन में मदद करता है, तंत्रिका संकेत संचरण का समर्थन करता है, लाल रक्त कोशिका निर्माण में सहायता करता है।",
+        tip: "बी विटामिन एक टीम के रूप में काम करते हैं — विविध आहार रखें।"
+      },
+      C: {
+        benefits: "शक्तिशाली एंटीऑक्सीडेंट जो प्रतिरक्षा बढ़ाता है, त्वचा और जोड़ों के लिए कोलेजन संश्लेषण में सहायता करता है, हृदय कोशिकाओं की रक्षा करता है।",
+        tip: "विटामिन सी जल में घुलनशील है — प्रतिदिन ताजे फल-सब्जियाँ शामिल करें।"
+      },
+      D: {
+        benefits: "कैल्शियम अवशोषण बढ़ाता है, हड्डी क्षय रोकता है, प्रतिरक्षा नियंत्रित करता है, मांसपेशी शक्ति बनाए रखता है।",
+        tip: "सुरक्षित धूप (10–30 मिनट) और खाद्य स्रोत विटामिन डी का सबसे अच्छा संयोजन हैं।"
+      },
+      E: {
+        benefits: "ऑक्सीडेटिव तनाव से लड़ता है, कोशिकीय उम्र बढ़ने को धीमा करता है, लाल रक्त कोशिकाओं और कोशिका झिल्ली की रक्षा करता है।",
+        tip: "विटामिन ई विटामिन सी जैसे अन्य एंटीऑक्सीडेंट के साथ अच्छा काम करता है।"
+      },
+      Calcium: {
+        benefits: "हड्डियों और दाँतों की संरचना बनाता है, मांसपेशी संकुचन और तंत्रिका संकेत में भूमिका निभाता है।",
+        tip: "कैल्शियम अवशोषण के लिए विटामिन डी आवश्यक है।"
+      },
+      Magnesium: {
+        benefits: "मांसपेशी विश्राम, ऊर्जा उत्पादन, तंत्रिका कार्य और हड्डी स्वास्थ्य का समर्थन करता है।",
+        tip: "बीज, नट्स और हरी पत्तेदार सब्जियाँ अच्छे स्रोत हैं।"
+      },
+      Zinc: {
+        benefits: "प्रतिरक्षा, घाव भरना, कोशिका मरम्मत और स्वाद/गंध का समर्थन करता है।",
+        tip: "बीज, नट्स, फलियाँ और शेलफिश जिंक से भरपूर हैं।"
+      },
+      Iron: {
+        benefits: "हीमोग्लोबिन निर्माण, ऑक्सीजन परिवहन और ऊर्जा स्तर का समर्थन करता है।",
+        tip: "विटामिन सी आयरन अवशोषण बढ़ाता है — आयरन युक्त भोजन के साथ खट्टा फल लें।"
+      },
+      Potassium: {
+        benefits: "रक्तचाप नियंत्रित करने, मांसपेशी और तंत्रिका कार्य में मदद करता है।",
+        tip: "केला, नारियल पानी और हरी सब्जियाँ अच्छे स्रोत हैं।"
+      },
+      Sodium: {
+        benefits: "द्रव संतुलन और तंत्रिका संकेत में भूमिका निभाता है — संतुलित मात्रा में आवश्यक।",
+        tip: "अधिकांश लोगों को नमक कम करने की आवश्यकता होती है, बढ़ाने की नहीं।"
+      },
+      Iodine: {
+        benefits: "थायरॉइड हार्मोन उत्पादन और चयापचय नियंत्रण के लिए आवश्यक।",
+        tip: "आयोडीन युक्त नमक और समुद्री भोजन मुख्य स्रोत हैं।"
+      },
+      diabetes: {
+        benefits: "रक्त शर्करा नियंत्रण और समग्र चयापचय स्वास्थ्य का समर्थन करने वाले खाद्य पदार्थों पर ध्यान।",
+        tip: "फाइबर युक्त भोजन, नियंत्रित कार्ब्स और नियमित भोजन समय महत्वपूर्ण हैं।"
+      },
+      hypertension: {
+        benefits: "रक्तचाप नियंत्रण में सहायक खनिज और खाद्य पैटर्न।",
+        tip: "नमक कम करें, पोटैशियम बढ़ाएँ, प्रसंस्कृत भोजन सीमित करें।"
+      },
+      anemia: {
+        benefits: "आयरन और बी12 युक्त खाद्य पदार्थों से लाल रक्त कोशिका निर्माण का समर्थन।",
+        tip: "आयरन के साथ विटामिन सी अवशोषण बढ़ाता है।"
+      },
+      osteoporosis: {
+        benefits: "हड्डी घनत्व बनाए रखने के लिए कैल्शियम, विटामिन डी और के।",
+        tip: "भार वहन व्यायाम और पर्याप्त विटामिन डी महत्वपूर्ण हैं।"
+      },
+      acidity: {
+        benefits: "एसिडिटी कम करने वाले खाद्य पदार्थ और आदतों पर ध्यान।",
+        tip: "तला-भुना, खट्टा और बहुत मसालेदार भोजन सीमित करें; छोटे भोजन लें।"
+      },
+      arthritis: {
+        benefits: "जोड़ों की सूजन कम करने वाले एंटी-इंफ्लेमेटरी खाद्य पदार्थ।",
+        tip: "ओमेगा-3, हल्दी और रंग-बिरंगे फल-सब्जियाँ सहायक हो सकते हैं।"
+      },
+      fattyLiver: {
+        benefits: "लीवर वसा कम करने और डिटॉक्स का समर्थन।",
+        tip: "चीनी, फ्रक्टोज और प्रसंस्कृत भोजन कम करें; वजन नियंत्रित रखें।"
+      },
+      kidneyStones: {
+        benefits: "पत्थरी रोकथाम के लिए जल सेवन और आहार समायोजन।",
+        tip: "पर्याप्त पानी पिएँ; डॉक्टर की सलाह के अनुसार ऑक्सालेट/नमक नियंत्रित करें।"
+      },
+      hairLoss: {
+        benefits: "बाल विकास के लिए आवश्यक पोषक तत्वों का समर्थन।",
+        tip: "प्रोटीन, आयरन, जिंक और बायोटिन पर्याप्त मात्रा में लें।"
+      },
+      skinIssues: {
+        benefits: "त्वचा स्वास्थ्य और सूजन नियंत्रण का समर्थन।",
+        tip: "चीनी और दूध कुछ लोगों में मुँहासों को बढ़ा सकते हैं; पानी और एंटीऑक्सीडेंट बढ़ाएँ।"
+      },
+      dentalCavities: {
+        benefits: "दाँत और मसूड़ों की मजबूती का समर्थन।",
+        tip: "चीनी सीमित करें; कैल्शियम और विटामिन डी पर्याप्त रखें।"
+      },
+      anxietyInsomnia: {
+        benefits: "तंत्रिका तंत्र और नींद गुणवत्ता का समर्थन।",
+        tip: "मैग्नीशियम, बी विटामिन और कैफीन/स्क्रीन समय सीमित करना सहायक हो सकता है।"
+      },
+      thyroid: {
+        benefits: "थायरॉइड हार्मोन उत्पादन और चयापचय का समर्थन।",
+        tip: "आयोडीन, सेलेनियम और पर्याप्त प्रोटीन महत्वपूर्ण हो सकते हैं — डॉक्टर से जाँच कराएँ।"
+      },
+      immunity: {
+        benefits: "प्रतिरक्षा प्रणाली को मजबूत बनाने वाले पोषक तत्व।",
+        tip: "विटामिन सी, डी, जिंक और विविध पौधे आधारित आहार प्रतिरक्षा का समर्थन करते हैं।"
+      }
+    };
+
+    function getBenefits(key, eng) {
+      if (currentLang === 'hi' && hiContent[key] && hiContent[key].benefits) return hiContent[key].benefits;
+      return eng;
+    }
+    function getTip(key, eng) {
+      if (currentLang === 'hi' && hiContent[key] && hiContent[key].tip) return hiContent[key].tip;
+      return eng;
+    }
+
+    function getTitle(key, engTitle) {
+      if (currentLang === 'hi' && hiTitles[key]) return hiTitles[key];
+      return engTitle;
+    }
+
+    const foodEmojiMap = {
+      "Carrots": "🥕", "Sweet potatoes": "🍠", "Spinach": "🥬", "Broccoli": "🥦", "Pumpkins": "🎃",
+      "Liver": "🍖", "Eggs": "🥚", "Fortified dairy": "🥛", "Mango": "🥭", "Papaya": "🥭",
+      "Red peppers": "🫑", "Avocados": "🥑", "Nuts & seeds": "🥜", "Whole grains": "🌾",
+      "Leafy greens": "🥬", "Legumes": "🫘", "Meat & fish": "🐟", "Dairy": "🥛", "Banana": "🍌",
+      "Salmon": "🐟", "Fortified cereals": "🥣", "Oranges": "🍊", "Lemons": "🍋", "Bell peppers": "🫑",
+      "Strawberries": "🍓", "Kiwis": "🥝", "Tomatoes": "🍅", "Guava": "🍈", "Amla": "🫒",
+      "Pineapple": "🍍", "Sunlight exposure": "☀️", "Fatty fish (salmon, mackerel)": "🐟",
+      "Mushrooms (UV-exposed)": "🍄", "Fortified dairy & plant milks": "🥛", "Egg yolks": "🍳",
+      "Sardines": "🐟", "Cod liver oil": "🧴", "Almonds": "🌰", "Sunflower seeds": "🌻",
+      "Avocados": "🥑", "Wheat germ": "🌾", "Vegetable oils": "🫒", "Hazelnuts": "🥜",
+      "Peanuts": "🥜", "Pine nuts": "🌰", "Dairy products": "🥛", "Shellfish (zinc)": "🦐",
+      "Pumpkin seeds": "🎃", "Fortified foods": "🥣", "Tofu": "🧈", "Dark chocolate": "🍫",
+      "Leafy greens": "🥬", "Nuts & seeds": "🥜", "Whole grains": "🌾"
+    };
+    function foodEmoji(name) {
+      if (foodEmojiMap[name]) return foodEmojiMap[name];
+      const lower = name.toLowerCase();
+      for (const k of Object.keys(foodEmojiMap)) {
+        if (lower.includes(k.toLowerCase()) || k.toLowerCase().includes(lower.split(' ')[0])) return foodEmojiMap[k];
+      }
+      return "🥗";
+    }
+
+    const foodNameHi = {
+      "Avocado": "एवोकाडो", "Avocados": "एवोकाडो",
+      "Nuts & Seeds": "नट्स और बीज", "Nuts": "नट्स", "Nuts & seeds": "नट्स और बीज",
+      "Leafy Greens": "हरी पत्तेदार सब्जियाँ", "Leafy greens": "हरी पत्तेदार सब्जियाँ",
+      "Eggs": "अंडे", "Whole Grains": "साबुत अनाज", "Whole grains": "साबुत अनाज",
+      "Berries": "बेरीज़", "Salmon": "सैल्मन", "Banana": "केला", "Bananas": "केला",
+      "Dark Chocolate": "डार्क चॉकलेट", "Carrots": "गाजर", "Sweet Potatoes": "शकरकंद",
+      "Sweet potatoes": "शकरकंद", "Spinach & Kale": "पालक और केल", "Spinach": "पालक",
+      "Citrus Fruits": "खट्टे फल", "Almonds": "बादाम", "Bell Peppers": "शिमला मिर्च",
+      "Bell peppers": "शिमला मिर्च", "Broccoli": "ब्रोकली", "Mango": "आम",
+      "Fatty Fish": "वसायुक्त मछली", "Garlic": "लहसुन", "Watermelon": "तरबूज",
+      "Oats": "ओट्स", "Olive Oil": "जैतून का तेल", "Lemon": "नींबू", "Lemons": "नींबू",
+      "Beetroot": "चुकंदर", "Apple": "सेब", "Ginger": "अदरक", "Yogurt": "दही",
+      "Papaya": "पपीता", "Figs": "अंजीर", "Pumpkin Seeds": "कद्दू के बीज",
+      "Orange": "संतरा", "Oranges": "संतरा", "Carrot": "गाजर",
+      "Dairy / Fortified": "डेयरी / फोर्टिफाइड", "Dairy products": "डेयरी उत्पाद",
+      "Mushrooms": "मशरूम", "Tofu": "टोफू", "Sardines": "सार्डिन",
+      "Goji Berries": "गोजी बेरी", "Strawberries": "स्ट्रॉबेरी", "Kiwis": "कीवी",
+      "Tomatoes": "टमाटर", "Guava": "अमरूद", "Amla": "आँवला", "Pineapple": "अनानास",
+      "Sunlight exposure": "धूप का संपर्क", "Fatty fish (salmon, mackerel)": "वसायुक्त मछली (सैल्मन, मैकेरल)",
+      "Mushrooms (UV-exposed)": "मशरूम (यूवी युक्त)", "Fortified dairy & plant milks": "फोर्टिफाइड डेयरी और प्लांट मिल्क",
+      "Egg yolks": "अंडे की जर्दी", "Cod liver oil": "कॉड लिवर ऑयल",
+      "Sunflower seeds": "सूरजमुखी के बीज", "Wheat germ": "गेहूँ का अंकुर",
+      "Vegetable oils": "वनस्पति तेल", "Hazelnuts": "हेज़लनट", "Peanuts": "मूंगफली",
+      "Pine nuts": "पाइन नट्स", "Shellfish (zinc)": "शेलफिश (जिंक)",
+      "Pumpkin seeds": "कद्दू के बीज", "Fortified foods": "फोर्टिफाइड खाद्य पदार्थ",
+      "Fortified dairy": "फोर्टिफाइड डेयरी", "Liver": "लीवर", "Pumpkins": "कद्दू",
+      "Red peppers": "लाल शिमला मिर्च", "Legumes": "दलहन", "Meat & fish": "मांस और मछली",
+      "Dairy": "डेयरी", "Fortified cereals": "फोर्टिफाइड अनाज",
+      "Sugary drinks & sweets": "मीठे पेय और मिठाइयाँ",
+      "White rice & refined flour": "सफेद चावल और मैदा",
+      "Fried & processed snacks": "तले और प्रसंस्कृत स्नैक्स",
+      "Sweetened packaged juices": "मीठे पैकेज्ड जूस",
+      "Excess salt & pickles/papad": "अधिक नमक और अचार/पापड़",
+      "Processed & canned foods": "प्रसंस्कृत और डिब्बाबंद भोजन",
+      "Red or processed meats": "लाल या प्रसंस्कृत मांस",
+      "Excess caffeine": "अधिक कैफीन",
+      "Red meat (if non-veg)": "लाल मांस (यदि मांसाहारी)",
+      "Pomegranate": "अनार",
+      "Dates": "खजूर",
+      "Jaggery": "गुड़",
+      "Beans": "सेम/बीन्स",
+      "Lentils": "दालें",
+      "Chicken": "मुर्गी",
+      "Fish": "मछली",
+      "Milk": "दूध",
+      "Curd": "दही",
+      "Cheese": "पनीर/चीज़",
+      "Paneer": "पनीर",
+      "Walnuts": "अखरोट",
+      "Cashews": "काजू",
+      "Raisins": "किशमिश",
+      "Cucumber": "खीरा",
+      "Tomato": "टमाटर",
+      "Potato": "आलू",
+      "Sweet potato": "शकरकंद",
+      "Corn": "मक्का",
+      "Peas": "मटर",
+      "Chickpeas": "चना",
+      "Soybean": "सोयाबीन",
+      "Sesame seeds": "तिल",
+      "Flax seeds": "अलसी",
+      "Chia seeds": "चिया बीज",
+      "Coconut": "नारियल",
+      "Coconut water": "नारियल पानी",
+      "Honey": "शहद",
+      "Turmeric": "हल्दी",
+      "Green tea": "ग्रीन टी",
+      "Black tea": "चाय",
+      "Coffee": "कॉफी",
+      "Dark leafy greens": "गहरे हरे पत्तेदार साग",
+      "Fortified plant milks": "फोर्टिफाइड प्लांट मिल्क",
+      "Organ meats": "अंग मांस",
+      "Shellfish": "शेलफिश",
+      "Oysters": "ऑयस्टर",
+      "Clams": "क्लैम",
+      "Turkey": "टर्की",
+      "Pork": "पोर्क",
+      "Beef": "बीफ़",
+      "Lamb": "मेमना",
+      "Butter": "मक्खन",
+      "Ghee": "घी",
+      "Mustard oil": "सरसों का तेल",
+      "Rice": "चावल",
+      "Brown rice": "ब्राउन राइस",
+      "Wheat": "गेहूँ",
+      "Barley": "जौ",
+      "Millet": "बाजरा",
+      "Ragi": "रागी",
+      "Quinoa": "क्विनोआ",
+      "Muskmelon": "खरबूजा",
+      "Grapes": "अंगूर",
+      "Lime": "नींबू",
+      "Kiwi": "कीवी",
+      "Strawberry": "स्ट्रॉबेरी",
+      "Blueberry": "ब्लूबेरी",
+      "Jackfruit": "कटहल",
+      "Drumstick": "सहजन",
+      "Bitter gourd": "करेला",
+      "Bottle gourd": "लौकी",
+      "Ridge gourd": "तोरी",
+      "Okra": "भिंडी",
+      "Cauliflower": "फूलगोभी",
+      "Cabbage": "पत्ता गोभी",
+      "Onion": "प्याज",
+      "Green chillies": "हरी मिर्च",
+      "Coriander": "धनिया",
+      "Mint": "पुदीना",
+      "Fenugreek": "मेथी",
+      "Mustard greens": "सरसों का साग",
+      "Methi": "मेथी",
+      "Sprouts": "अंकुरित अनाज",
+      "Roasted chana": "भुना चना",
+      "Sesame": "तिल",
+      "Jaggery (gur)": "गुड़",
+      "Gur": "गुड़",
+      "Black sesame": "काला तिल",
+      "White sesame": "सफेद तिल",
+      "Flaxseed": "अलसी",
+      "Pumpkin": "कद्दू",
+      "Ash gourd": "पेठा",
+      "Snake gourd": "चिचिंडा",
+      "Ivy gourd": "कुंदरू",
+      "Cluster beans": "ग्वार फली",
+      "French beans": "फ्रेंच बीन्स",
+      "Kidney beans": "राजमा",
+      "Black beans": "काली सेम",
+      "Green gram": "मूंग",
+      "Black gram": "उड़द",
+      "Pigeon peas": "अरहर/तूर",
+      "Horse gram": "कुलथी",
+      "Soy milk": "सोया मिल्क",
+      "Almond milk": "बादाम दूध",
+      "Oat milk": "ओट मिल्क",
+      "Alcohol": "शराब",
+      "Deep fried foods": "गहरे तले भोजन",
+      "Trans fats": "ट्रांस फैट",
+      "Excess sugar": "अधिक चीनी",
+      "Packaged snacks": "पैकेज्ड स्नैक्स",
+      "Soft drinks": "सॉफ्ट ड्रिंक्स",
+      "Energy drinks": "एनर्जी ड्रिंक्स",
+      "Processed cheese": "प्रसंस्कृत चीज़",
+      "Instant noodles": "इंस्टेंट नूडल्स",
+      "Bakery items": "बेकरी आइटम",
+      "Maida products": "मैदा उत्पाद"
+    };
+
+    const foodNoteHi = {
+      "Healthy fats + B vitamins": "स्वस्थ वसा + बी विटामिन",
+      "B6, magnesium, healthy fats": "बी6, मैग्नीशियम, स्वस्थ वसा",
+      "Folate powerhouse": "फोलेट का पावरहाउस",
+      "B12 and choline": "बी12 और कोलीन",
+      "B-complex vitamins": "बी-कॉम्प्लेक्स विटामिन",
+      "Antioxidants for brain": "मस्तिष्क के लिए एंटीऑक्सीडेंट",
+      "Omega-3 & B12": "ओमेगा-3 और बी12",
+      "B6 for neurotransmitters": "न्यूरोट्रांसमीटर के लिए बी6",
+      "Flavonoids & magnesium": "फ्लेवोनॉइड्स और मैग्नीशियम",
+      "Beta-carotene → Vitamin A": "बीटा-कैरोटीन → विटामिन ए",
+      "High in Vitamin A": "विटामिन ए से भरपूर",
+      "Lutein & zeaxanthin": "ल्यूटिन और ज़ेक्सैंथिन",
+      "Vitamin C boost": "विटामिन सी बूस्ट",
+      "Vitamin E": "विटामिन ई",
+      "Vitamins A + C": "विटामिन ए + सी",
+      "Lutein + Vitamin C": "ल्यूटिन + विटामिन सी",
+      "Vitamin A & C": "विटामिन ए और सी",
+      "Omega-3 (salmon, mackerel)": "ओमेगा-3 (सैल्मन, मैकेरल)",
+      "Heart-friendly compounds": "हृदय-अनुकूल यौगिक",
+      "Potassium for blood pressure": "रक्तचाप के लिए पोटैशियम",
+      "Citrulline & lycopene": "सिट्रुलिन और लाइकोपीन",
+      "Vitamin K & folate": "विटामिन के और फोलेट",
+      "Healthy fats & magnesium": "स्वस्थ वसा और मैग्नीशियम",
+      "Beta-glucan for cholesterol": "कोलेस्ट्रॉल के लिए बीटा-ग्लूकन",
+      "Antioxidants for vessels": "वाहिकाओं के लिए एंटीऑक्सीडेंट",
+      "Monounsaturated fats": "मोनोअनसैचुरेटेड वसा",
+      "Easy on the gut + B6": "आंत के लिए आसान + बी6",
+      "Vitamin C & digestion aid": "विटामिन सी और पाचन सहायक",
+      "Fiber + vitamins": "फाइबर + विटामिन",
+      "Supports liver detox": "लीवर डिटॉक्स का समर्थन",
+      "Fiber for gut health": "आंत स्वास्थ्य के लिए फाइबर",
+      "Soothes digestion": "पाचन को शांत करता है",
+      "Probiotics for gut": "आंत के लिए प्रोबायोटिक्स",
+      "Digestive enzymes": "पाचन एंजाइम",
+      "Soluble fiber": "घुलनशील फाइबर",
+      "Folate & healthy fats": "फोलेट और स्वस्थ वसा",
+      "Antioxidants": "एंटीऑक्सीडेंट",
+      "Anti-inflammatory": "सूजनरोधी",
+      "Minerals & fiber": "खनिज और फाइबर",
+      "Zinc & B vitamins": "जिंक और बी विटामिन",
+      "Folate essential": "फोलेट आवश्यक",
+      "Choline & B12": "कोलीन और बी12",
+      "Zinc rich": "जिंक युक्त",
+      "Vitamin C for absorption": "अवशोषण के लिए विटामिन सी",
+      "Healthy fats + potassium": "स्वस्थ वसा + पोटैशियम",
+      "Magnesium & vitamins": "मैग्नीशियम और विटामिन",
+      "Vitamin C & K": "विटामिन सी और के",
+      "Vitamin C for recovery": "रिकवरी के लिए विटामिन सी",
+      "Vitamin A & antioxidants": "विटामिन ए और एंटीऑक्सीडेंट",
+      "Vitamin E & magnesium": "विटामिन ई और मैग्नीशियम",
+      "Potassium for cramps": "ऐंठन के लिए पोटैशियम",
+      "Protein + Omega-3": "प्रोटीन + ओमेगा-3",
+      "Complex carbs & vitamins": "कॉम्प्लेक्स कार्ब्स और विटामिन",
+      "Calcium + Vitamin K": "कैल्शियम + विटामिन के",
+      "Calcium & Vitamin D": "कैल्शियम और विटामिन डी",
+      "Calcium & Vitamin C": "कैल्शियम और विटामिन सी",
+      "Magnesium & calcium": "मैग्नीशियम और कैल्शियम",
+      "Vitamin D": "विटामिन डी",
+      "Natural Vitamin D": "प्राकृतिक विटामिन डी",
+      "Calcium-set tofu": "कैल्शियम युक्त टोफू",
+      "Calcium + Vitamin D": "कैल्शियम + विटामिन डी",
+      "Vitamin C for collagen": "कोलेजन के लिए विटामिन सी",
+      "Sustained energy fats": "टिकाऊ ऊर्जा वसा",
+      "B vitamins & fiber": "बी विटामिन और फाइबर",
+      "Energizing & anti-inflammatory": "ऊर्जा देने वाला और सूजनरोधी",
+      "Antioxidants & nutrients": "एंटीऑक्सीडेंट और पोषक तत्व",
+      "Magnesium & healthy fats": "मैग्नीशियम और स्वस्थ वसा",
+      "Magnesium & folate": "मैग्नीशियम और फोलेट",
+      "Quick energy + B6": "त्वरित ऊर्जा + बी6",
+      "Complex carbs for stamina": "सहनशक्ति के लिए कॉम्प्लेक्स कार्ब्स",
+      "B12 & protein": "बी12 और प्रोटीन",
+      "Omega-3 fatty acids": "ओमेगा-3 फैटी एसिड",
+      "Calcium & potassium": "कैल्शियम और पोटैशियम"
+    };
+
+    function foodName(name) {
+      if (currentLang !== 'hi') return name;
+      if (foodNameHi[name]) return foodNameHi[name];
+      // case-insensitive exact
+      const lower = name.toLowerCase();
+      for (const k of Object.keys(foodNameHi)) {
+        if (k.toLowerCase() === lower) return foodNameHi[k];
+      }
+      // partial contains
+      for (const k of Object.keys(foodNameHi)) {
+        if (lower.includes(k.toLowerCase()) || k.toLowerCase().includes(lower)) return foodNameHi[k];
+      }
+      return name;
+    }
+    function foodNote(note) {
+      if (currentLang === 'hi' && foodNoteHi[note]) return foodNoteHi[note];
+      return note;
+    }
+
+
+
+    function setActiveNav(tabId) {
+      const navPages = ['home', 'bodyPartList', 'vitaminList', 'mineralList', 'diseaseList'];
+      navPages.forEach(id => {
+        const btn = document.getElementById('nav-' + id);
+        if (btn) btn.classList.toggle('active-tab', id === tabId);
+      });
+    }
+
     function showPage(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById('page-' + pageId).classList.add('active');
 
-      navPages.forEach(id => {
-        const btn = document.getElementById('nav-' + id);
-        if (btn) btn.classList.toggle('active-tab', id === pageId);
-      });
+      setActiveNav(pageId);
 
       if (pageId === 'diseaseList') renderDiseaseList();
       if (pageId === 'vitaminList') renderVitaminList();
@@ -1167,6 +1831,7 @@
       if (!part) return;
 
       const c = colorMap[part.color] || colorMap.teal;
+      const displayTitle = getTitle(partId, part.title);
 
       const vitaminsHtml = part.vitamins.map(v =>
         `<span class="vitamin-badge ${c.badge}">${v}</span>`
@@ -1176,8 +1841,8 @@
         <div class="food-item bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
           <div class="text-3xl">${f.emoji}</div>
           <div>
-            <div class="font-semibold text-gray-800">${f.name}</div>
-            <div class="text-xs text-gray-500">${f.note}</div>
+            <div class="font-semibold text-gray-800">${foodName(f.name)}</div>
+            <div class="text-xs text-gray-500">${foodNote(f.note)}</div>
           </div>
         </div>
       `).join('');
@@ -1190,8 +1855,8 @@
                 <i class="fas ${part.icon}"></i>
               </div>
               <div>
-                <h2 class="text-2xl font-bold">${part.title}</h2>
-                <p class="text-white/90 text-sm mt-1">Key nutrients & food sources</p>
+                <h2 class="text-2xl font-bold">${displayTitle}</h2>
+                <p class="text-white/90 text-sm mt-1">${t('keyNutrients')}</p>
               </div>
             </div>
           </div>
@@ -1199,35 +1864,38 @@
           <div class="grid md:grid-cols-2 gap-6">
             <div class="bg-white rounded-2xl p-6 shadow-md">
               <h3 class="font-bold text-lg mb-3 flex items-center gap-2 text-gray-800">
-                <i class="fas fa-pills ${c.icon}"></i> Recommended Nutrients
+                <i class="fas fa-pills ${c.icon}"></i> ${t('recommended')}
               </h3>
               <div class="mb-4">${vitaminsHtml}</div>
 
               <h3 class="font-bold text-lg mb-2 flex items-center gap-2 mt-6 text-gray-800">
-                <i class="fas fa-heart-pulse ${c.icon}"></i> Core Benefits
+                <i class="fas fa-heart-pulse ${c.icon}"></i> ${t('coreBenefits')}
               </h3>
-              <p class="text-gray-700 text-sm leading-relaxed">${part.benefits}</p>
+              <p class="text-gray-700 text-sm leading-relaxed">${getBenefits(partId, part.benefits)}</p>
 
               <div class="mt-6 p-4 ${c.tipBg} rounded-xl border">
-                <p class="text-sm ${c.tipText}"><i class="fas fa-lightbulb mr-2"></i><strong>Tip:</strong> ${part.tip}</p>
+                <p class="text-sm ${c.tipText}"><i class="fas fa-lightbulb mr-2"></i><strong>${t('tip')}</strong> ${getTip(partId, part.tip)}</p>
               </div>
             </div>
 
             <div class="bg-white rounded-2xl p-6 shadow-md">
               <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-gray-800">
-                <i class="fas fa-utensils ${c.icon}"></i> Top Food Sources
+                <i class="fas fa-utensils ${c.icon}"></i> ${t('topFoods')}
               </h3>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 ${foodsHtml}
               </div>
-              <p class="text-xs text-gray-500 mt-3 text-center italic">More options available in a balanced, varied diet.</p>
+              <p class="text-xs text-gray-500 mt-3 text-center italic">${t('moreOptions')}</p>
             </div>
           </div>
         </div>
       `;
 
       document.getElementById('detail-content').innerHTML = html;
+      const backBtn = document.querySelector('#page-detail button');
+      if (backBtn) backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> ' + t('backToBody');
       showPage('detail');
+      setActiveNav('bodyPartList');
     }
 
     function renderBodyPartList() {
@@ -1235,12 +1903,13 @@
       const html = Object.keys(bodyParts).map(key => {
         const p = bodyParts[key];
         const c = colorMap[p.color] || colorMap.teal;
+        const title = getTitle(key, p.title);
         return `
           <div class="browse-card bg-white rounded-2xl p-4 shadow-md border border-gray-100 text-center" onclick="showDetail('${key}')">
             <div class="w-12 h-12 rounded-full ${c.header} text-white flex items-center justify-center text-xl mx-auto mb-2 shadow">
               <i class="fas ${p.icon}"></i>
             </div>
-            <div class="font-semibold text-gray-800 text-sm leading-tight">${p.title}</div>
+            <div class="font-semibold text-gray-800 text-sm leading-tight">${title}</div>
           </div>
         `;
       }).join('');
@@ -1251,10 +1920,16 @@
       const n = nutrients[key];
       if (!n) return;
       const c = colorMap[n.color] || colorMap.teal;
+      const displayTitle = getTitle(key, n.title);
 
-      const foodsHtml = n.foods.map(f =>
-        `<span class="inline-block bg-white px-3 py-1.5 rounded-full text-sm shadow-sm border border-gray-200 mr-2 mb-2 text-gray-700">${f}</span>`
-      ).join('');
+      const foodsHtml = n.foods.map(f => `
+        <div class="food-item bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
+          <div class="text-3xl">${foodEmoji(f)}</div>
+          <div>
+            <div class="font-semibold text-gray-800">${foodName(f)}</div>
+          </div>
+        </div>
+      `).join('');
 
       const html = `
         <div class="${c.header} text-white rounded-2xl p-6 mb-6 shadow-lg">
@@ -1263,25 +1938,29 @@
               <i class="fas ${n.icon}"></i>
             </div>
             <div>
-              <h2 class="text-2xl font-bold">${n.title}</h2>
-              <p class="text-white/90 text-sm mt-1">Targets: ${n.targets}</p>
+              <h2 class="text-2xl font-bold">${displayTitle}</h2>
+              <p class="text-white/90 text-sm mt-1">${t('targets')} ${n.targets}</p>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-          <h3 class="font-bold text-lg mb-3 text-gray-800"><i class="fas fa-star ${c.icon} mr-2"></i>Core Health Benefits</h3>
-          <p class="text-gray-700 leading-relaxed">${n.benefits}</p>
+          <h3 class="font-bold text-lg mb-3 text-gray-800"><i class="fas fa-star ${c.icon} mr-2"></i>${t('coreBenefits')}</h3>
+          <p class="text-gray-700 leading-relaxed">${getBenefits(key, n.benefits)}</p>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-md">
-          <h3 class="font-bold text-lg mb-4 text-gray-800"><i class="fas fa-apple-whole ${c.icon} mr-2"></i>Top Food Sources</h3>
-          <div class="flex flex-wrap">${foodsHtml}</div>
+          <h3 class="font-bold text-lg mb-4 text-gray-800"><i class="fas fa-apple-whole ${c.icon} mr-2"></i>${t('topFoods')}</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${foodsHtml}</div>
+          <p class="text-xs text-gray-500 mt-3 text-center italic">${t('moreOptions')}</p>
         </div>
       `;
 
       document.getElementById('nutrient-content').innerHTML = html;
+      const backBtn = document.querySelector('#page-nutrient button');
+      if (backBtn) backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> ' + t('backToBody');
       showPage('nutrient');
+      setActiveNav('vitaminList');
     }
 
     function renderVitaminList() {
@@ -1289,12 +1968,13 @@
       const html = Object.keys(nutrients).map(key => {
         const n = nutrients[key];
         const c = colorMap[n.color] || colorMap.teal;
+        const title = getTitle(key, n.title);
         return `
           <div class="browse-card bg-white rounded-2xl p-4 shadow-md border border-gray-100 text-center" onclick="showNutrient('${key}')">
             <div class="w-12 h-12 rounded-full ${c.header} text-white flex items-center justify-center text-xl mx-auto mb-2 shadow">
               <i class="fas ${n.icon}"></i>
             </div>
-            <div class="font-semibold text-gray-800 text-sm leading-tight">${n.title}</div>
+            <div class="font-semibold text-gray-800 text-sm leading-tight">${title}</div>
           </div>
         `;
       }).join('');
@@ -1305,10 +1985,16 @@
       const m = minerals[key];
       if (!m) return;
       const c = colorMap[m.color] || colorMap.teal;
+      const displayTitle = getTitle(key, m.title);
 
-      const foodsHtml = m.foods.map(f =>
-        `<span class="inline-block bg-white px-3 py-1.5 rounded-full text-sm shadow-sm border border-gray-200 mr-2 mb-2 text-gray-700">${f}</span>`
-      ).join('');
+      const foodsHtml = m.foods.map(f => `
+        <div class="food-item bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
+          <div class="text-3xl">${foodEmoji(f)}</div>
+          <div>
+            <div class="font-semibold text-gray-800">${foodName(f)}</div>
+          </div>
+        </div>
+      `).join('');
 
       const html = `
         <div class="${c.header} text-white rounded-2xl p-6 mb-6 shadow-lg">
@@ -1317,25 +2003,29 @@
               <i class="fas ${m.icon}"></i>
             </div>
             <div>
-              <h2 class="text-2xl font-bold">${m.title}</h2>
-              <p class="text-white/90 text-sm mt-1">Targets: ${m.targets}</p>
+              <h2 class="text-2xl font-bold">${displayTitle}</h2>
+              <p class="text-white/90 text-sm mt-1">${t('targets')} ${m.targets}</p>
             </div>
           </div>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-          <h3 class="font-bold text-lg mb-3 text-gray-800"><i class="fas fa-star ${c.icon} mr-2"></i>Core Health Benefits</h3>
-          <p class="text-gray-700 leading-relaxed">${m.benefits}</p>
+          <h3 class="font-bold text-lg mb-3 text-gray-800"><i class="fas fa-star ${c.icon} mr-2"></i>${t('coreBenefits')}</h3>
+          <p class="text-gray-700 leading-relaxed">${getBenefits(key, m.benefits)}</p>
         </div>
 
         <div class="bg-white rounded-2xl p-6 shadow-md">
-          <h3 class="font-bold text-lg mb-4 text-gray-800"><i class="fas fa-apple-whole ${c.icon} mr-2"></i>Top Food Sources</h3>
-          <div class="flex flex-wrap">${foodsHtml}</div>
+          <h3 class="font-bold text-lg mb-4 text-gray-800"><i class="fas fa-apple-whole ${c.icon} mr-2"></i>${t('topFoods')}</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">${foodsHtml}</div>
+          <p class="text-xs text-gray-500 mt-3 text-center italic">${t('moreOptions')}</p>
         </div>
       `;
 
       document.getElementById('mineral-content').innerHTML = html;
+      const backBtn = document.querySelector('#page-mineralDetail button');
+      if (backBtn) backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> ' + t('backToBody');
       showPage('mineralDetail');
+      setActiveNav('mineralList');
     }
 
     function renderMineralList() {
@@ -1343,12 +2033,13 @@
       const html = Object.keys(minerals).map(key => {
         const m = minerals[key];
         const c = colorMap[m.color] || colorMap.teal;
+        const title = getTitle(key, m.title);
         return `
           <div class="browse-card bg-white rounded-2xl p-4 shadow-md border border-gray-100 text-center" onclick="showMineral('${key}')">
             <div class="w-12 h-12 rounded-full ${c.header} text-white flex items-center justify-center text-xl mx-auto mb-2 shadow">
               <i class="fas ${m.icon}"></i>
             </div>
-            <div class="font-semibold text-gray-800 text-sm leading-tight">${m.title}</div>
+            <div class="font-semibold text-gray-800 text-sm leading-tight">${title}</div>
           </div>
         `;
       }).join('');
@@ -1360,12 +2051,13 @@
       const html = Object.keys(diseases).map(key => {
         const d = diseases[key];
         const c = colorMap[d.color] || colorMap.teal;
+        const title = getTitle(key, d.title);
         return `
           <div class="browse-card bg-white rounded-2xl p-4 shadow-md border border-gray-100 text-center" onclick="showDiseaseDetail('${key}')">
             <div class="w-12 h-12 rounded-full ${c.header} text-white flex items-center justify-center text-xl mx-auto mb-2 shadow">
               <i class="fas ${d.icon}"></i>
             </div>
-            <div class="font-semibold text-gray-800 text-sm leading-tight">${d.title}</div>
+            <div class="font-semibold text-gray-800 text-sm leading-tight">${title}</div>
             <div class="text-xs text-gray-500 mt-1">${d.system}</div>
           </div>
         `;
@@ -1377,13 +2069,14 @@
       const d = diseases[key];
       if (!d) return;
       const c = colorMap[d.color] || colorMap.teal;
+      const displayTitle = getTitle(key, d.title);
 
       const helpfulHtml = d.helpfulFoods.map(f => `
         <div class="food-item bg-white rounded-xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
           <div class="text-3xl">${f.emoji}</div>
           <div>
-            <div class="font-semibold text-gray-800">${f.name}</div>
-            <div class="text-xs text-gray-500">${f.note}</div>
+            <div class="font-semibold text-gray-800">${foodName(f.name)}</div>
+            <div class="text-xs text-gray-500">${foodNote(f.note)}</div>
           </div>
         </div>
       `).join('');
@@ -1391,7 +2084,7 @@
       const avoidHtml = d.avoidFoods.map(a => `
         <div class="avoid-item bg-red-50 rounded-xl p-3 border border-red-100 flex items-center gap-2">
           <i class="fas fa-ban text-red-400"></i>
-          <span class="text-sm text-red-800">${a}</span>
+          <span class="text-sm text-red-800">${foodName(a)}</span>
         </div>
       `).join('');
 
@@ -1403,29 +2096,29 @@
                 <i class="fas ${d.icon}"></i>
               </div>
               <div>
-                <h2 class="text-2xl font-bold">${d.title}</h2>
-                <p class="text-white/90 text-sm mt-1">Related system: ${d.system}</p>
+                <h2 class="text-2xl font-bold">${displayTitle}</h2>
+                <p class="text-white/90 text-sm mt-1">${t('relatedSystem')} ${d.system}</p>
               </div>
             </div>
           </div>
 
           <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-6 text-xs text-amber-800 flex items-start gap-2">
             <i class="fas fa-circle-info mt-0.5"></i>
-            <span>Educational information only — not medical advice. Always consult a doctor or dietitian for diagnosis and personalized treatment.</span>
+            <span>${t('educational')}</span>
           </div>
 
           <div class="bg-white rounded-2xl p-6 shadow-md mb-6">
-            <h3 class="font-bold text-lg mb-3 text-gray-800"><i class="fas fa-notes-medical ${c.icon} mr-2"></i>About this condition</h3>
-            <p class="text-gray-700 text-sm leading-relaxed">${d.description}</p>
+            <h3 class="font-bold text-lg mb-3 text-gray-800"><i class="fas fa-notes-medical ${c.icon} mr-2"></i>${t('aboutCondition')}</h3>
+            <p class="text-gray-700 text-sm leading-relaxed">${getBenefits(key, d.description)}</p>
             <div class="mt-4 p-4 ${c.tipBg} rounded-xl border">
-              <p class="text-sm ${c.tipText}"><i class="fas fa-lightbulb mr-2"></i><strong>Tip:</strong> ${d.tip}</p>
+              <p class="text-sm ${c.tipText}"><i class="fas fa-lightbulb mr-2"></i><strong>${t('tip')}</strong> ${getTip(key, d.tip)}</p>
             </div>
           </div>
 
           <div class="grid md:grid-cols-2 gap-6">
             <div class="bg-white rounded-2xl p-6 shadow-md">
               <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-gray-800">
-                <i class="fas fa-thumbs-up text-green-600"></i> Foods That May Help
+                <i class="fas fa-thumbs-up text-green-600"></i> ${t('foodsThatHelp')}
               </h3>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 ${helpfulHtml}
@@ -1434,7 +2127,7 @@
 
             <div class="bg-white rounded-2xl p-6 shadow-md">
               <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-gray-800">
-                <i class="fas fa-thumbs-down text-red-500"></i> Foods to Limit
+                <i class="fas fa-thumbs-down text-red-500"></i> ${t('foodsToLimit')}
               </h3>
               <div class="grid grid-cols-1 gap-2">
                 ${avoidHtml}
@@ -1445,7 +2138,10 @@
       `;
 
       document.getElementById('disease-content').innerHTML = html;
+      const backBtn = document.querySelector('#page-diseaseDetail button');
+      if (backBtn) backBtn.innerHTML = '<i class="fas fa-arrow-left"></i> ' + t('backToBody');
       showPage('diseaseDetail');
+      setActiveNav('diseaseList');
     }
   </script>
 
@@ -1465,6 +2161,12 @@
     }
     function hideThankYou() {
       document.getElementById('thankYouModal').style.display = 'none';
+    }
+    // Apply initial language labels
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", applyLanguage);
+    } else {
+      applyLanguage();
     }
   </script>
 </body>
